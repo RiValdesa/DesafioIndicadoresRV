@@ -1,0 +1,91 @@
+﻿@model IEnumerable<DesafioIndicadores.Models.TipoIndicador>
+@{
+    ViewBag.Title = "Principal";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Fluctuacion Diaria</h5>
+                <div id="fluctuacion_chart" style="width: 1300px; height: 400px"></div>
+            </div>
+        </div>
+    </div>
+    
+    @foreach (var x in Model)
+    {
+    <div class="col-6">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">@x.Descripcion</h5>
+                <div id="@(x.Descripcion)_chart" style="width: 700px; height: 500px"></div>
+                <div class="row">
+                    <div class="col-12">
+                        <a href="@Url.Action("Details","Indicador")/@(x.Id)" class="btn btn-info btn-xs float-right"> <i class="fas fa-edit"></i>&nbsp;Editar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    }
+</div>
+
+
+
+
+@section scripts
+{
+    <script type="text/javascript">
+        $("#overlay").fadeIn(300);
+        $(function () {
+            google.charts.load('current', { 'packages': ['corechart'] });
+            let paginaFluctuacion = "@Url.Action("GetDataFluctuaDiario", "Home")";
+            let paginaByTipo = "@Url.Action("GetDataByTipo", "Home")";
+            var tipo = @Html.Raw(Json.Encode(Model));
+
+
+            //Carga fluctuacion diaria
+            $.getJSON(paginaFluctuacion, function (json) {
+
+                let dataInterna = [['Fecha', 'uf', 'ivp', 'dolar', 'euro', 'tpm', 'libra_cobre']]
+
+                for (var i = 0; i < json.length; i++) {
+                    dataInterna.push([json[i].Fecha, parseFloat(json[i].Uf.replace(",", ".")), parseFloat(json[i].Ivp.replace(",", ".")), parseFloat(json[i].Dolar.replace(",", ".")), parseFloat(json[i].Euro.replace(",", ".")), parseFloat(json[i].Tpm.replace(",", ".")), parseFloat(json[i].Libra_cobre.replace(",", "."))]);
+                }
+
+                var dataFluctuacion = google.visualization.arrayToDataTable(dataInterna);
+
+                var options = {
+                    title: 'Fluctuacion Diaria',
+                    legend: { position: 'bottom' }
+                };
+
+                var chart = new google.visualization.LineChart(document.getElementById('fluctuacion_chart'));
+
+                chart.draw(dataFluctuacion, options);
+                $("#overlay").fadeOut(300);
+            });
+
+            for (var i = 0; i < tipo.length; i++) {
+                $.getJSON(paginaByTipo + "?filtro=" + tipo[i].Descripcion, function (json) {
+                    var dataInterna = [['Fecha', 'Valor']];
+
+                    for (var i = 0; i < json.length; i++) {
+                        dataInterna.push([json[i].Fecha, parseFloat(json[i].Valor.replace(",","."))]);
+                    }
+
+                    var data = google.visualization.arrayToDataTable(dataInterna);
+
+                    var options = {
+                        title: "Fluctuacion",
+                        legend: { position: 'bottom' }
+                    };
+
+                    var chart = new google.visualization.ColumnChart(document.getElementById(json[0].Descripcion + "_chart"));
+                    chart.draw(data, options);
+                });
+            }
+        });
+    </script>
+}

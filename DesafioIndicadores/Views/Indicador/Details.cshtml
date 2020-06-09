@@ -1,0 +1,108 @@
+﻿@model DesafioIndicadores.Models.IndicadorWeb
+
+@{
+    ViewBag.Title = Model.tipo.Descripcion;
+}
+
+
+<div class="row">
+    <div class="col-12">
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-10">
+                        <h5 class="card-title">Modificar @Model.tipo.Descripcion</h5>
+                    </div>
+                    <div class="col-2">
+                        <a href="@Url.Action("Index", "Home")" class="btn btn-xs btn-outline-info mb-2"><i class="fas fa-arrow-left"></i>&nbsp;Volver</a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 table-responsive">
+                        <table class="table">
+                            <tr>
+                                <th>Id</th>
+                                <th>Fecha</th>
+                                <th>Valor</th>
+                                <th></th>
+                            </tr>
+
+                            @foreach (var item in Model.indicadores)
+                            {
+                                <tr>
+                                    <td>@item.Id</td>
+                                    <td>@item.fecha</td>
+                                    <td>
+                                        <span id="show_@(item.Id)">
+                                            @item.valor
+                                        </span>
+                                        <input type="text" id="editText_@(item.Id)" class="form-control" style="display:none;" value="@item.valor" />
+                                    </td>
+                                    <td>
+                                        <button id="edit_@(item.Id)" class="btn btn-info btn-xs float-right editar"> <i class="fas fa-edit"></i>&nbsp;Editar</button>
+                                        <button id="save_@(item.Id)" class="btn btn-success btn-xs float-right guardar" style="display:none;"> <i class="fas fa-save"></i>&nbsp;Guardar</button>
+                                        <button id="cancel_@(item.Id)" class="btn btn-danger btn-xs float-right cancelar" style="display:none;"> <i class="fas fa-save"></i>&nbsp;Cancelar</button>
+                                    </td>
+                                </tr>
+                            }
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section scripts
+{
+    <script type="text/javascript">
+        $(function () {
+            $(".editar").click(function () {
+                var id = $(this).attr("id").split("_")[1];
+                $("#show_" + id).hide();
+                $("#editText_" + id).show();
+                $(this).hide();
+                $("#save_" + id).show();
+                $("#cancel_" + id).show();
+            });
+
+            $(".guardar").click(function () {
+                var id = $(this).attr("id").split("_")[1];
+                
+                var url ="@Url.Action("saveIndicador", "Indicador")";
+                var valor = $("#editText_" + id).val();
+                $.post(url, { id: id, valor: valor }, function (data) {
+                    if (data) {
+                        $("#show_" + id).text($("#editText_" + id).val());
+                        $("#show_" + id).show();
+                        $("#editText_" + id).hide();
+                        $("#save_" + id).hide();
+                        $("#cancel_" + id).hide();
+                        $("#edit_" + id).show();
+                    } else {
+                        $("#show_" + id).show();
+                        $("#editText_" + id).hide();
+                        $("#save_" + id).hide();
+                        $("#cancel_" + id).hide();
+                        $("#edit_" + id).show();
+                    }
+                    
+                });
+            });
+            $(".cancelar").click(function () {
+                var id = $(this).attr("id").split("_")[1];
+
+                $("#editText_" + id).val($("#show_" + id).text());
+                $("#show_" + id).show();
+                $("#editText_" + id).hide();
+                $(this).hide();
+                $("#save_" + id).hide();
+                $("#edit_" + id).show();
+            });
+
+        });
+    </script>
+}
