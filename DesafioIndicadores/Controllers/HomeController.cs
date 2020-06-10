@@ -157,15 +157,19 @@ namespace DesafioIndicadores.Controllers
             try
             {
                 this._session = NHibernateHelper.GetCurrentSession();
+                var inserta = this._session.QueryOver<Indicador>().List<Indicador>().Where(x=> x.tipoIndicador.Id == idTipo.Id && x.fecha == fecha).ToList().Count;
                 // TODO: Add insert logic here
-                var indicador = new Indicador
+                if (inserta == 0)
                 {
-                    tipoIndicador = idTipo,
-                    fecha = fecha,
-                    valor = valor
-                };
-                this._session.SaveOrUpdate(indicador);
-
+                    var indicador = new Indicador
+                    {
+                        tipoIndicador = idTipo,
+                        fecha = fecha,
+                        valor = valor
+                    };
+                    this._session.SaveOrUpdate(indicador);
+                }
+                
                 //return true;
             }
             catch (Exception e)
