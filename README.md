@@ -10,4 +10,4 @@
 Para modificar valores se debe ingresar mediante el botón de Edición en cada gráfico de columnasAl presionar el botón editar de la tabla se activa un textbox el cual permite el ingreso de valores numéricos y coma, una vez terminada la modificación presionar en botón Guardar.
 
 # Instrucciones 
-Clonar o descargar repositorio, ejecutar archivo .sln para iniciar visual studio, compilar la aplicación (para que actualice y descarge los nuggets) y ejecutar con iisExpress
+Clonar o descargar repositorio, ejecutar archivo .sln para iniciar visual studio, compilar la aplicación (para que actualice y descargue los nuggets) y ejecutar con iisExpress
