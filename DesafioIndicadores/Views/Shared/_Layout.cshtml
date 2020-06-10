@@ -25,10 +25,19 @@
                 <div class="pt-3">
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a><i class="fas fa-home"></i> Inicio</a>
+                            <a href="@Url.Action("Index", "Home")"><i class="fas fa-home"></i> Inicio</a>
                         </li>
                         <li class="nav-item">
-                            <a><i class="fas fa-sync"></i> Recargar</a>
+                            &nbsp;
+                        </li>
+                        <li class="nav-item">
+                            Desarrollado por Ricardo Valdés
+                        </li>
+                        <li class="nav-item">
+                            <i class="fas fa-phone"></i> &nbsp;+56 9 62346426
+                        </li>
+                        <li class="nav-item">
+                            <i class="fas fa-envelope"></i> &nbsp;ricardo.valdes.a@gmail.com
                         </li>
                     </ul>
                 </div>
@@ -37,7 +46,6 @@
             <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
                 <div class="justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                     @RenderBody()
-                    <hr />
                 </div>
                 <footer class="text-center">
                     <p>&copy; @DateTime.Now.Year -Desafio Indicadores Ricardo Valdés</p>

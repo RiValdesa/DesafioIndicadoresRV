@@ -8,23 +8,23 @@
         <div class="card mb-4">
             <div class="card-body">
                 <h5 class="card-title">Fluctuacion Diaria</h5>
-                <div id="fluctuacion_chart" style="width: 1300px; height: 400px"></div>
+                <div id="fluctuacion_chart"></div>
             </div>
         </div>
     </div>
     
     @foreach (var x in Model)
     {
-    <div class="col-6">
+    <div class="col-md-6 col-12">
         <div class="card mb-4">
-            <div class="card-body">
+            <div class="card-header">
                 <h5 class="card-title">@x.Descripcion</h5>
-                <div id="@(x.Descripcion)_chart" style="width: 700px; height: 500px"></div>
-                <div class="row">
-                    <div class="col-12">
-                        <a href="@Url.Action("Details","Indicador")/@(x.Id)" class="btn btn-info btn-xs float-right"> <i class="fas fa-edit"></i>&nbsp;Editar</a>
-                    </div>
-                </div>
+            </div>
+            <div class="card-body">
+                <div id="@(x.Descripcion)_chart"></div>
+            </div>
+            <div class="card-footer">
+                <a href="@Url.Action("Details","Indicador")/@(x.Id)" class="btn btn-info btn-xs float-right"> <i class="fas fa-edit"></i>&nbsp;Editar</a>
             </div>
         </div>
     </div>
@@ -43,7 +43,11 @@
             let paginaFluctuacion = "@Url.Action("GetDataFluctuaDiario", "Home")";
             let paginaByTipo = "@Url.Action("GetDataByTipo", "Home")";
             var tipo = @Html.Raw(Json.Encode(Model));
-
+            var alto = 0.5;
+            var ancho = 0.8;
+            if ($(window).width() > 500) {
+                ancho = 0.4;
+            }
 
             //Carga fluctuacion diaria
             $.getJSON(paginaFluctuacion, function (json) {
@@ -58,7 +62,9 @@
 
                 var options = {
                     title: 'Fluctuacion Diaria',
-                    legend: { position: 'bottom' }
+                    legend: { position: 'bottom' },
+                    width: $(window).width()* 0.79,
+                    height: $(window).height() * alto
                 };
 
                 var chart = new google.visualization.LineChart(document.getElementById('fluctuacion_chart'));
@@ -76,10 +82,13 @@
                     }
 
                     var data = google.visualization.arrayToDataTable(dataInterna);
-
+                    var ancho
+                    
                     var options = {
-                        title: "Fluctuacion",
-                        legend: { position: 'bottom' }
+                        title: "Grafico por Unidad",
+                        legend: { position: 'bottom' },
+                        width: $(window).width()* ancho,
+                        height: $(window).height() * alto
                     };
 
                     var chart = new google.visualization.ColumnChart(document.getElementById(json[0].Descripcion + "_chart"));
