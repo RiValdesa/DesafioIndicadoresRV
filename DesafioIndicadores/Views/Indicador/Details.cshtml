@@ -36,11 +36,11 @@
                                         <span id="show_@(item.Id)">
                                             @item.valor
                                         </span>
-                                        <input type="text" id="editText_@(item.Id)" class="form-control" style="display:none;" value="@item.valor" />
+                                        <input type="text" id="editText_@(item.Id)" class="form-control floatTextBox" style="display:none;" value="@item.valor" />
                                     </td>
                                     <td>
                                         <button id="edit_@(item.Id)" class="btn btn-info btn-xs float-right editar"> <i class="fas fa-edit"></i>&nbsp;Editar</button>
-                                        <button id="save_@(item.Id)" class="btn btn-success btn-xs float-right guardar" style="display:none;"> <i class="fas fa-save"></i>&nbsp;Guardar</button>
+                                        <button id="save_@(item.Id)" class="btn btn-success btn-xs float-right guardar ml-2" style="display:none;"> <i class="fas fa-save"></i>&nbsp;Guardar</button>
                                         <button id="cancel_@(item.Id)" class="btn btn-danger btn-xs float-right cancelar" style="display:none;"> <i class="fas fa-save"></i>&nbsp;Cancelar</button>
                                     </td>
                                 </tr>
@@ -59,7 +59,28 @@
 @section scripts
 {
     <script type="text/javascript">
+        (function ($) {
+            $.fn.inputFilter = function (inputFilter) {
+                return this.on("input keydown keyup mousedown mouseup select contextmenu drop", function () {
+                    if (inputFilter(this.value)) {
+                        this.oldValue = this.value;
+                        this.oldSelectionStart = this.selectionStart;
+                        this.oldSelectionEnd = this.selectionEnd;
+                    } else if (this.hasOwnProperty("oldValue")) {
+                        this.value = this.oldValue;
+                        this.setSelectionRange(this.oldSelectionStart, this.oldSelectionEnd);
+                    } else {
+                        this.value = "";
+                    }
+                });
+            };
+        }(jQuery));
+
         $(function () {
+            $(".floatTextBox").inputFilter(function (value) {
+                return /^-?\d*[.,]?\d*$/.test(value);
+            });
+
             $(".editar").click(function () {
                 var id = $(this).attr("id").split("_")[1];
                 $("#show_" + id).hide();
